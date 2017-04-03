@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var dataset = require('./dataset.json').bankBalances;
 
 // Get a unique array of the state concerned
@@ -141,7 +143,21 @@ var sumOfHighInterests = sumInterestByState.filter(function(element){
     and the value is the sum of all amounts from that state
       the value must be rounded to the nearest cent
  */
-var stateSums = null;
+
+var stateSums = {};
+
+for (let i = 0; i < uniqueArrayState.length; i++){
+var reducedBankBalance = dataset.reduce(function(prev,element){
+    if(uniqueArrayState[i] === element.state){
+      prev += parseFloat(element.amount);
+    }
+    return prev;
+  },0);
+
+  stateSums[uniqueArrayState[i]] =(Math.round(reducedBankBalance*100))/100;
+}
+
+
 
 /*
   set lowerSumStates to an array containing
@@ -149,7 +165,31 @@ var stateSums = null;
   where the sum of amounts in the state is
     less than 1,000,000
  */
-var lowerSumStates = null;
+var lowerSumStates = [];
+
+for (let i = 0; i < uniqueArrayState.length; i++){
+var sumLowBankBalance = dataset.reduce(function(prev,element){
+    if(uniqueArrayState[i] === element.state){
+      prev += parseFloat(element.amount);
+    }
+    return prev;
+  },0);
+
+  lowerSumStates.push({[uniqueArrayState[i]] : Math.round(sumLowBankBalance*100)/100});
+}
+
+lowerSumStates = lowerSumStates.filter(function(currentObject){
+  return currentObject[Object.keys(currentObject).join()] < 1000000;
+
+});
+
+lowerSumStates = lowerSumStates.map(function(element){
+  element = Object.keys(element).join();
+  return element;
+  });
+
+
+
 
 /*
   set higherStateSums to be the sum of
@@ -157,7 +197,29 @@ var lowerSumStates = null;
     where the sum of amounts in the state is
       greater than 1,000,000
  */
-var higherStateSums = null;
+
+var higherStateSums = [];
+
+for (let i = 0; i < uniqueArrayState.length; i++){
+var sumLowBankBalance = dataset.reduce(function(prev,element){
+    if(uniqueArrayState[i] === element.state){
+      prev += parseFloat(element.amount);
+    }
+    return prev;
+  },0);
+
+  higherStateSums.push({[uniqueArrayState[i]] : Math.round(sumLowBankBalance*100)/100});
+}
+
+higherStateSums = higherStateSums.filter(function(currentObject){
+  return currentObject[Object.keys(currentObject).join()] > 1000000;
+});
+
+var higherStateSums = higherStateSums.reduce(function(prev,element){
+      prev += element[Object.keys(element).join()];
+      return prev;
+  },0);
+
 
 /*
   set areStatesInHigherStateSum to be true if
@@ -171,7 +233,41 @@ var higherStateSums = null;
     Delaware
   false otherwise
  */
-var areStatesInHigherStateSum = null;
+
+ var areStatesInHigherStateSum = [];
+
+// filter on the concerned states only
+var filterAreStates = dataset.filter(function(element){
+  return (element.state === "WI" || element.state === "IL" || element.state === "WY" || element.state === "OH" || element.state === "GA" || element.state === "DE");
+});
+
+//sum only for the states filtered
+
+for (let i = 0; i < uniqueArrayState.length; i++){
+  var reducedFilterAreStates = filterAreStates.reduce(function(prev,element){
+    if(uniqueArrayState[i] === element.state){
+      prev += parseFloat(element.amount);
+    }
+    return prev;
+  },0);
+
+  areStatesInHigherStateSum.push({"state":uniqueArrayState[i],"sumOfAmount":reducedFilterAreStates});
+}
+
+//filter to keep only an array with the concerned states
+
+var areStatesInHigherStateSum1 = areStatesInHigherStateSum.filter(function(element){
+  return element.sumOfAmount !== 0;
+});
+
+
+
+areStatesInHigherStateSum = areStatesInHigherStateSum1.every(function(element){
+  return element.sumOfAmount > 2550000;
+},0);
+
+
+console.log(areStatesInHigherStateSum);
 
 /*
   Stretch Goal && Final Boss
@@ -187,7 +283,15 @@ var areStatesInHigherStateSum = null;
     Delaware
   false otherwise
  */
-var anyStatesInHigherStateSum = null;
+
+
+var anyStatesInHigherStateSum = [];
+
+ anyStatesInHigherStateSum = areStatesInHigherStateSum1.some(function(element){
+  return element.sumOfAmount > 2550000;
+},0);
+
+
 
 
 module.exports = {

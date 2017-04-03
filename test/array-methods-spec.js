@@ -6,16 +6,16 @@ var arrayMethods = require('../array-methods');
 describe('Array Methods', function() {
 
   describe('hundredThousandairs', function() {
-    
+
     it('should be an array with accounts from bankBalances that are greater than 100000.00', function() {
       arrayMethods.hundredThousandairs.should.have.length(93);
       arrayMethods.hundredThousandairs.every(function (account){ return account.amount > 100000; }).should.be.true;
     });
-    
+
   });
 
   describe('roundedDollar', function() {
-    
+
     it('should be an array of accounts with an added key `rounded`', function() {
       arrayMethods.roundedDollar.should.have.length(100);
       arrayMethods.roundedDollar.every(function (account){ return account.hasOwnProperty('rounded'); }).should.be.true;
@@ -32,7 +32,7 @@ describe('Array Methods', function() {
   });
 
   describe('roundedDime', function() {
-    
+
     it('should be an array of accounts with a modified `amount` value', function() {
       arrayMethods.roundedDime.should.have.length(100);
       arrayMethods.roundedDime.every(function (account){ return account.hasOwnProperty('amount'); }).should.be.true;
@@ -48,11 +48,11 @@ describe('Array Methods', function() {
   });
 
   describe('sumOfBankBalances', function() {
-    
+
     it('should be the sum of all amounts in bankBalances, rounded to the nearest cent', function() {
       arrayMethods.sumOfBankBalances.should.be.equal(55502603.02);
     });
-    
+
   });
 
   describe('sumOfInterests', function() {
@@ -105,7 +105,7 @@ describe('Array Methods', function() {
     });
 
   });
-  
+
   describe('higherStateSums', function() {
 
     it('should be the sum of all amounts of every state, where the sum of amounts in the state is greater than 1,000,000', function() {
